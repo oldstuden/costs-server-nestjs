@@ -5,7 +5,7 @@ import { CreateUserDto } from "src/auth/dto/create-user.dto";
 import { User } from "src/schemas/users.schema";
 
 @Injectable()
-export class UserService {
+export class UsersService {
 	constructor (@InjectModel(User.name) private usersModel: Model<User>) {}
 
 	async registration (createUserDto: CreateUserDto): Promise<User | null> {
@@ -17,6 +17,10 @@ export class UserService {
 
 		const createUser = new this.usersModel(createUserDto);
 		return createUser.save();
+	}
+
+	async findOne(username:string): Promise<User> {
+		return this.usersModel.findOne({username});
 	}
 
 }

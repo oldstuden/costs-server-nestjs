@@ -1,8 +1,9 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, Req, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, Patch, Req, Res, UseGuards, Param, Delete } from "@nestjs/common";
 import { CostsService } from "./costs.service";
 import { AuthService } from "src/auth/auth.service";
 import { JwtGuard } from "src/auth/guards/jwt.guard";
 import { CreateCostDto } from "./dto/create-cost.dto";
+import { UpdateCostDto } from "./dto/update-cost.dto";
 
 @Controller('cost')
 export class CostsController {
@@ -35,5 +36,24 @@ export class CostsController {
 			...createCostDto,
 			userId: user._id as string,
 		});
+	}
+
+	@UseGuards(JwtGuard)
+	@Patch(':id')
+	@HttpCode(HttpStatus.OK)
+	async updateCost(
+		@Body() updateCostDto: UpdateCostDto,
+		@Param('id') id: string,
+	) {
+		return await this.costsService.update(updateCostDto, id);
+	}
+
+	@UseGuards(JwtGuard)
+	@Delete(':id')
+	@HttpCode(HttpStatus.OK)
+	async deleteCost(
+		@Param('id') id: string,
+	) {
+		return await this.costsService.delete(id);
 	}
 }
